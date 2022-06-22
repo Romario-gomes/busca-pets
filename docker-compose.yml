@@ -1,10 +1,30 @@
 version: "3.7"
 
 services:
+  database_buscapets:
+    image: postgres
+    container_name: database_buscapets
+    restart: always
+    ports:
+      - 5432:5432
+    environment: 
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=pets
+      - POSTGRES_DB=buscapets
+    volumes: 
+      - pgdata:/data/postgres
   app:
     build: .
-    container_name: busca-pets
+    container_name: busca_pets
     ports:
       - 3333:3333
     volumes:
       - .:/usr/app
+    links:
+      - database_buscapets
+    depends_on: 
+      - database_buscapets
+
+volumes: 
+  pgdata:
+    driver: local

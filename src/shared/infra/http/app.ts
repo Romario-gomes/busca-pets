@@ -1,8 +1,7 @@
 import express from "express";
 import "reflect-metadata";
 
-import createConnection from "@shared/infra/typeorm";
-
+import createConnection from "../typeorm";
 import { router } from "./routes";
 
 const app = express();

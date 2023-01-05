@@ -15,7 +15,7 @@ describe("Create Pet", () => {
       name: "Billy",
       age: 2,
       type: "Dog",
-      weight: 40,
+      weight: 42,
       genre: "masculine",
     });
 

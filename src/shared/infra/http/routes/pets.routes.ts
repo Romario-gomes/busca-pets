@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { ListPetsController } from "../../../../modules/pets/useCases/listPets/ListPetsController";
+import { CreatePetController } from "../../../../modules/pets/useCases/createPet/CreatePetController";
 
 const petsRoutes = Router();
 
-const listPetsController = new ListPetsController();
-petsRoutes.get("/", listPetsController.handle);
+const createPetController = new CreatePetController();
+petsRoutes.post("/", createPetController.handle);
 
 export { petsRoutes };

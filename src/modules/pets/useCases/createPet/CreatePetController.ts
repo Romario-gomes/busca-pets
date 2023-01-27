@@ -16,6 +16,7 @@ class CreatePetController {
       weight,
       age,
     });
+
     return response.status(201).json(pet);
   }
 }

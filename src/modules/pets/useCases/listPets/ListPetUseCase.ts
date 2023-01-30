@@ -9,10 +9,9 @@ class ListPetUseCase {
     @inject("PetsRepository")
     private petsRepository: IPetsRepository,
   ) {}
-
+  /* Retornar data de criação */
   async execute(): Promise<Pet[]> {
     const pets = await this.petsRepository.listAll();
-
     return pets;
   }
 }

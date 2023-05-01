@@ -18,7 +18,7 @@ describe("Create Pet", () => {
       weight: 42,
       genre: "masculine",
     });
-
+    console.log("Pet criado: ", pet);
     expect(pet).toHaveProperty("id");
   });
 });

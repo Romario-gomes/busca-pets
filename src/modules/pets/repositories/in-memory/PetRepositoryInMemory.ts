@@ -24,6 +24,12 @@ class PetsRepositoryInMemory implements IPetsRepository {
     this.pets.push(pet);
     return pet;
   }
+  listAll(): Promise<Pet[]> {
+    throw new Error("Method not implemented.");
+  }
+  getById(id: string): Promise<Pet> {
+    throw new Error("Method not implemented.");
+  }
 }
 
 export { PetsRepositoryInMemory };

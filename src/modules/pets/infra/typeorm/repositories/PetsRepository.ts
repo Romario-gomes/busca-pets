@@ -36,5 +36,11 @@ class PetsRepository implements IPetsRepository {
 
     return pets;
   }
+
+  async getById(id: string): Promise<Pet> {
+    const pets = this.repository.findOne(id);
+
+    return pets;
+  }
 }
 export { PetsRepository };

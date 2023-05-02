@@ -3,7 +3,12 @@
     "target": "es5",                               
     "module": "commonjs",                             
     "baseUrl": "./src",                            
-    "paths": {},     
+    "paths": {
+      "@modules/*": ["modules/*"],
+      "@config/*": ["config/*"],
+      "@shared/*": ["shared/*"],
+      "@utils/*": ["utils/*"]
+    },     
     "esModuleInterop": true,                       
     "experimentalDecorators": true,             
     "emitDecoratorMetadata": true, 

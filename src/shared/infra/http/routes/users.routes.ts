@@ -1,18 +1,15 @@
 import { Router } from "express";
 
+import { CreateUserController } from "../../../../modules/accounts/useCases/createUser/CreateUserController";
 import { CreatePetController } from "../../../../modules/pets/useCases/createPet/CreatePetController";
 import { DetailsPetController } from "../../../../modules/pets/useCases/detailsPet/DetailsPetController";
 import { ListPetsController } from "../../../../modules/pets/useCases/listPets/ListPetController";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 
-const petsRoutes = Router();
+const usersRoutes = Router();
 
-const createPetController = new CreatePetController();
-const listPetsController = new ListPetsController();
-const detailsPetController = new DetailsPetController();
+const createUserController = new CreateUserController();
 
-petsRoutes.post("/", createPetController.handle);
-petsRoutes.get("/list", ensureAuthenticated, listPetsController.handle);
-petsRoutes.get("/:id", detailsPetController.handle);
+usersRoutes.post("/", createUserController.handle);
 
-export { petsRoutes };
+export { usersRoutes };

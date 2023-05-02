@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryColumn,
+} from "typeorm";
 import { v4 as uuidV4 } from "uuid";
+
+import Role from "./Role";
 
 @Entity("users")
 class User {
@@ -26,6 +35,14 @@ class User {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: "users_roles",
+    joinColumns: [{ name: "user_id" }],
+    inverseJoinColumns: [{ name: "role_id" }],
+  })
+  roles: Role[];
 
   constructor() {
     if (!this.id) {

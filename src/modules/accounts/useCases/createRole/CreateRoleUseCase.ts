@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
 
-import Role from "@modules/accounts/infra/typeorm/entities/Role";
-import { IPermissionsRepository } from "@modules/accounts/repositories/IPermissionsRepository";
-import { IRolesRepository } from "@modules/accounts/repositories/IRolesRepository";
-import { AppError } from "@shared/errors/AppError";
+import { AppError } from "../../../../shared/errors/AppError";
+import Role from "../../infra/typeorm/entities/Role";
+import { IPermissionsRepository } from "../../repositories/IPermissionsRepository";
+import { IRolesRepository } from "../../repositories/IRolesRepository";
 
 @injectable()
 class CreateRoleUseCase {

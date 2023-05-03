@@ -2,11 +2,12 @@ import { container } from "tsyringe";
 
 import "./providers";
 
-import { RolesRepository } from "@modules/accounts/infra/typeorm/repositories/RolesRepository";
-import { IRolesRepository } from "@modules/accounts/repositories/IRolesRepository";
-
+import { PermissionsRepository } from "../../modules/accounts/infra/typeorm/repositories/PermissionsRepository";
+import { RolesRepository } from "../../modules/accounts/infra/typeorm/repositories/RolesRepository";
 import { UsersRepository } from "../../modules/accounts/infra/typeorm/repositories/UsersRepository";
 import { UsersTokensRepository } from "../../modules/accounts/infra/typeorm/repositories/UsersTokensRepository";
+import { IPermissionsRepository } from "../../modules/accounts/repositories/IPermissionsRepository";
+import { IRolesRepository } from "../../modules/accounts/repositories/IRolesRepository";
 import { IUsersRepository } from "../../modules/accounts/repositories/IUsersRepository";
 import { IUsersTokensRepository } from "../../modules/accounts/repositories/IUsersTokensRepository";
 import { PetsRepository } from "../../modules/pets/infra/typeorm/repositories/PetsRepository";
@@ -26,4 +27,9 @@ container.registerSingleton<IUsersTokensRepository>(
 container.registerSingleton<IRolesRepository>(
   "RolesRepository",
   RolesRepository,
+);
+
+container.registerSingleton<IPermissionsRepository>(
+  "PermissionsRepository",
+  PermissionsRepository,
 );

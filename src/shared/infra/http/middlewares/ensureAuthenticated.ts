@@ -43,7 +43,6 @@ export async function ensureAuthenticated(
     const roleUser = await usersRepository.findByIdWithRolesAndPermissions(
       user_id,
     );
-    console.log("roleUser: ", roleUser);
 
     if (!user) {
       throw new AppError("User does not exists!", 401);
@@ -74,7 +73,7 @@ export async function ensureAuthenticated(
 export function ensureAuthorized(roles: string[]) {
   return (request: Request, response: Response, next: NextFunction) => {
     const userRoles = request.user.roles;
-    console.log("Roles: ", userRoles);
+
     const hasPermission = roles.some(role => userRoles.includes(role));
     console.log("Permissoes: ", hasPermission);
     if (!hasPermission) {

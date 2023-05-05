@@ -50,6 +50,17 @@ class UsersRepository implements IUsersRepository {
 
     return user;
   }
+
+  async findByEmailWithRolesAndPermissions(email: string): Promise<User> {
+    const user = await this.repository.findOne(
+      { email },
+      {
+        relations: ["roles", "roles.permission"],
+      },
+    );
+
+    return user;
+  }
 }
 
 export { UsersRepository };

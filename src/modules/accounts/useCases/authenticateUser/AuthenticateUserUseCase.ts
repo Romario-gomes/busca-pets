@@ -2,6 +2,9 @@ import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { inject, injectable } from "tsyringe";
 
+import Permission from "@modules/accounts/infra/typeorm/entities/Permission";
+import Role from "@modules/accounts/infra/typeorm/entities/Role";
+
 import auth from "../../../../config/auth";
 import { IDateProvider } from "../../../../shared/container/providers/DateProvider/IDateProvider";
 import { AppError } from "../../../../shared/errors/AppError";
@@ -18,6 +21,8 @@ interface IResponse {
     name: string;
     email: string;
   };
+  permissions: string[];
+  roles: string[];
   token: string;
   refresh_token: string;
 }
@@ -33,8 +38,13 @@ class AuthenticateUserUseCase {
   ) {}
 
   async execute({ email, password }: IRequest): Promise<IResponse> {
-    const user = await this.usersRepository.findByEmail(email);
-
+    const user = await this.usersRepository.findByEmailWithRolesAndPermissions(
+      email,
+    );
+    const roles = user.roles.map(role => role.name);
+    const permission = user.roles[0].permission.map(
+      permission => permission.name,
+    );
     const {
       expires_in_token,
       secret_refresh_token,
@@ -54,10 +64,17 @@ class AuthenticateUserUseCase {
     }
 
     // Gerar jsonwebtoken
-    const token = sign({}, secret_token, {
-      subject: user.id,
-      expiresIn: expires_in_token,
-    });
+    const token = sign(
+      {
+        permissions: permission,
+        roles,
+      },
+      secret_token,
+      {
+        subject: user.id,
+        expiresIn: expires_in_token,
+      },
+    );
 
     const refresh_token = sign({ email }, secret_refresh_token, {
       subject: user.id,
@@ -79,6 +96,8 @@ class AuthenticateUserUseCase {
         name: user.name,
         email: user.email,
       },
+      permissions: permission,
+      roles,
       token,
       refresh_token,
     };

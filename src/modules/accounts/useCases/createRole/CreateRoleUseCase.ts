@@ -21,10 +21,14 @@ class CreateRoleUseCase {
       throw new AppError("Roles already Exists");
     }
 
+    const getPermissions = await this.permissionsRepository.findByIds(
+      permissions,
+    );
+
     const createdRole = await this.rolesRepository.create({
       name,
       description,
-      permissions,
+      permissions: getPermissions,
     });
 
     return createdRole;

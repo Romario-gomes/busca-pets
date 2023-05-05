@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
+import { v4 as uuidV4 } from "uuid";
 
 import Permission from "./Permission";
 
@@ -30,6 +31,12 @@ class Role {
     inverseJoinColumns: [{ name: "permission_id" }],
   })
   permission: Permission[];
+
+  constructor() {
+    if (!this.id) {
+      this.id = uuidV4();
+    }
+  }
 }
 
 export default Role;

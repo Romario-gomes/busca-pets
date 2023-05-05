@@ -31,6 +31,12 @@ class PermissionsRepository implements IPermissionsRepository {
     const permission = await this.repository.findOne({ name });
     return permission;
   }
+
+  async findByIds(ids: string[]): Promise<Permission[]> {
+    const permissions = await this.repository.findByIds(ids);
+
+    return permissions;
+  }
 }
 
 export { PermissionsRepository };

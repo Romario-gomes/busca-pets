@@ -10,6 +10,7 @@ class RolesRepository implements IRolesRepository {
   constructor() {
     this.repository = getRepository(Role);
   }
+
   async create({
     name,
     description,
@@ -18,6 +19,7 @@ class RolesRepository implements IRolesRepository {
     const role = this.repository.create({
       name,
       description,
+      permission: permissions,
     });
 
     await this.repository.save(role);
@@ -33,6 +35,12 @@ class RolesRepository implements IRolesRepository {
     const role = await this.repository.findOne(id);
 
     return role;
+  }
+
+  async findByIds(ids: string[]): Promise<Role[]> {
+    const roles = await this.repository.findByIds(ids);
+
+    return roles;
   }
 }
 

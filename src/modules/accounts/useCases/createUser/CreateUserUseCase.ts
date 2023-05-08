@@ -4,7 +4,6 @@ import { inject, injectable } from "tsyringe";
 import { IRolesRepository } from "@modules/accounts/repositories/IRolesRepository";
 
 import { AppError } from "../../../../shared/errors/AppError";
-import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
 @injectable()

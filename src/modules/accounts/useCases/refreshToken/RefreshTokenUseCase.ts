@@ -1,6 +1,8 @@
 import { verify, sign } from "jsonwebtoken";
 import { inject, injectable } from "tsyringe";
 
+import { IUsersRepository } from "@modules/accounts/repositories/IUsersRepository";
+
 import auth from "../../../../config/auth";
 import { IDateProvider } from "../../../../shared/container/providers/DateProvider/IDateProvider";
 import { AppError } from "../../../../shared/errors/AppError";
@@ -11,16 +13,25 @@ interface IPayLoad {
   email: string;
 }
 
+interface IResponse {
+  permissions: string[];
+  roles: string[];
+  token: string;
+  refreshToken: string;
+}
+
 @injectable()
 class RefreshTokenUseCase {
   constructor(
     @inject("UsersTokensRepository")
     private usersTokensRepository: IUsersTokensRepository,
+    @inject("UsersRepository")
+    private usersRepository: IUsersRepository,
     @inject("DayjsDateProvider")
     private dayjsDateProvider: IDateProvider,
   ) {}
 
-  async execute(token: string): Promise<string> {
+  async execute(token: string): Promise<IResponse> {
     const { email, sub } = verify(token, auth.secret_refresh_token) as IPayLoad;
 
     const user_id = sub;
@@ -52,7 +63,20 @@ class RefreshTokenUseCase {
       refresh_token,
     });
 
-    return refresh_token;
+    const userPermissionsAndRoles =
+      await this.usersRepository.findByIdWithRolesAndPermissions(user_id);
+
+    const roles = userPermissionsAndRoles.roles.map(role => role.name);
+    const permission = userPermissionsAndRoles.roles[0].permission.map(
+      permission => permission.name,
+    );
+
+    return {
+      token,
+      refreshToken: refresh_token,
+      permissions: permission,
+      roles,
+    };
   }
 }
 

@@ -24,7 +24,7 @@ interface IResponse {
   permissions: string[];
   roles: string[];
   token: string;
-  refresh_token: string;
+  refreshToken: string;
 }
 @injectable()
 class AuthenticateUserUseCase {
@@ -99,7 +99,7 @@ class AuthenticateUserUseCase {
       permissions: permission,
       roles,
       token,
-      refresh_token,
+      refreshToken: refresh_token,
     };
   }
 }

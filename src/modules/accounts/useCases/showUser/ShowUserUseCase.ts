@@ -21,9 +21,11 @@ class ShowUserUseCase {
   ) {}
 
   async execute({ token }: IRequest): Promise<User> {
-    const { email } = verify(token, auth.secret_refresh_token) as IPayLoad;
+    const { email } = verify(token, auth.secret_token) as IPayLoad;
 
-    const user = this.usersRepository.findByEmailWithRolesAndPermissions(email);
+    const user = await this.usersRepository.findByEmailWithRolesAndPermissions(
+      email,
+    );
 
     return user;
   }

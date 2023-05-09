@@ -66,6 +66,7 @@ class AuthenticateUserUseCase {
     // Gerar jsonwebtoken
     const token = sign(
       {
+        email,
         permissions: permission,
         roles,
       },

@@ -20,7 +20,7 @@ petsRoutes.get(
   "/list",
   ensureAuthenticated,
   ensureAuthorized(["ROLE_USER", "manager"]),
-  ensurePermission(["view_products"]),
+  ensurePermission(["view_product"]),
   listPetsController.handle,
 );
 petsRoutes.get("/:id", detailsPetController.handle);

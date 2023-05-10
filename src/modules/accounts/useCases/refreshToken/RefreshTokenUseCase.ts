@@ -34,8 +34,9 @@ class RefreshTokenUseCase {
   async execute(token: string): Promise<IResponse> {
     const { email, sub } = verify(token, auth.secret_refresh_token) as IPayLoad;
 
-    const user_id = sub;
+    const { expires_in_token, secret_token } = auth;
 
+    const user_id = sub;
     const userToken =
       await this.usersTokensRepository.findByUserIdAndRefreshToken(
         user_id,
@@ -45,6 +46,25 @@ class RefreshTokenUseCase {
     if (!userToken) {
       throw new AppError("Refresh Token does not exists!");
     }
+    const userPermissionsAndRoles =
+      await this.usersRepository.findByIdWithRolesAndPermissions(user_id);
+
+    const roles = userPermissionsAndRoles.roles.map(role => role.name);
+    const permission = userPermissionsAndRoles.roles[0].permission.map(
+      permission => permission.name,
+    );
+    const newToken = sign(
+      {
+        email,
+        permissions: permission,
+        roles,
+      },
+      secret_token,
+      {
+        subject: user_id,
+        expiresIn: expires_in_token,
+      },
+    );
 
     await this.usersTokensRepository.deleteById(userToken.id);
 
@@ -63,16 +83,8 @@ class RefreshTokenUseCase {
       refresh_token,
     });
 
-    const userPermissionsAndRoles =
-      await this.usersRepository.findByIdWithRolesAndPermissions(user_id);
-
-    const roles = userPermissionsAndRoles.roles.map(role => role.name);
-    const permission = userPermissionsAndRoles.roles[0].permission.map(
-      permission => permission.name,
-    );
-
     return {
-      token,
+      token: newToken,
       refreshToken: refresh_token,
       permissions: permission,
       roles,

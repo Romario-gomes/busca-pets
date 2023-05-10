@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { verify } from "jsonwebtoken";
+import { JsonWebTokenError, TokenExpiredError, verify } from "jsonwebtoken";
 
 import { UsersRepository } from "@modules/accounts/infra/typeorm/repositories/UsersRepository";
 
@@ -30,32 +30,25 @@ export async function ensureAuthenticated(
   const [, token] = authHeader.split(" ");
 
   try {
-    const { sub: user_id } = verify(
-      token,
-      auth.secret_refresh_token,
-    ) as IPayload;
+    const { sub: user_id } = verify(token, auth.secret_token) as IPayload;
 
-    const user = await usersTokensRepository.findByUserIdAndRefreshToken(
+    /* const user = await usersTokensRepository.findByUserIdAndRefreshToken(
       user_id,
       token,
-    );
+    ); */
 
-    const roleUser = await usersRepository.findByIdWithRolesAndPermissions(
-      user_id,
-    );
+    const user = await usersRepository.findByIdWithRolesAndPermissions(user_id);
 
     if (!user) {
       throw new AppError("User does not exists!", 401);
     }
 
-    const rolesName = roleUser.roles.map(role => role.name);
+    const rolesName = user.roles.map(role => role.name);
 
     request.user = {
       id: user_id,
       roles: rolesName,
-      permissions: roleUser.roles.flatMap(role =>
-        role.permission.map(p => p.name),
-      ),
+      permissions: user.roles.flatMap(role => role.permission.map(p => p.name)),
     };
     /* const existsRoles = userRoles?.some(r => role.includes(r)); */
 
@@ -65,8 +58,13 @@ export async function ensureAuthenticated(
 
     next();
   } catch (error) {
-    console.log(error);
-    throw new AppError("Invalid token!", 401);
+    if (error instanceof TokenExpiredError) {
+      throw new AppError("token.expired", 401);
+    } else if (error instanceof JsonWebTokenError) {
+      throw new AppError("Invalid JWT token", 401);
+    } else {
+      throw new AppError("Unexpected error", 500);
+    }
   }
 }
 
@@ -75,7 +73,6 @@ export function ensureAuthorized(roles: string[]) {
     const userRoles = request.user.roles;
 
     const hasPermission = roles.some(role => userRoles.includes(role));
-    console.log("Permissoes: ", hasPermission);
     if (!hasPermission) {
       throw new AppError("Unauthorized", 403);
     }
